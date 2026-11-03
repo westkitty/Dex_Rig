@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Dex Rig: an offline layered character rigging and animation studio.">
+  <title>Dex Rig — Character motion workbench</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="engine.js"></script>
+  <script defer src="gif.js"></script>
+  <script defer src="studio.js"></script>
+</head>
+<body>
+  <div class="studio-shell">
+    <header class="masthead">
+      <div class="brand-lockup"><span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></span><div><div class="brand-kicker">CHARACTER MOTION WORKBENCH</div><h1>Dex <em>Rig</em><span class="beta">/ 01</span></h1></div></div>
+      <div class="project-name"><label for="project-title">Project</label><input id="project-title" type="text" maxlength="100" autocomplete="off" value="Rig study" aria-label="Project title"></div>
+      <div class="header-actions"><span class="offline-indicator"><span class="indicator-dot"></span> LOCAL • NO CLOUD</span><button class="ui-button ghost compact" id="new-project" type="button">New</button><button class="ui-button ghost compact" id="open-project" type="button">Open</button><button class="ui-button primary compact" id="save-project" type="button">Save project <span aria-hidden="true">↗</span></button></div>
+      <input id="project-file" type="file" accept=".json,application/json" hidden>
+    </header>
+    <div class="workbench">
+      <aside class="panel layers-panel" aria-label="Layer workspace">
+        <div class="panel-heading"><div><div class="section-eyebrow">01 / STRUCTURE</div><h2>Artwork layers</h2></div><span id="layer-count" class="counter">00</span></div>
+        <p class="support-copy">Separate artwork moves better than a flattened illustration. Import PNG parts or cut regions from a source image.</p>
+        <div class="layer-actions"><label for="layer-input" class="ui-button add-layer">+ Add image layer</label><input id="layer-input" type="file" accept="image/png,image/jpeg,image/webp" hidden><button id="extract-toggle" type="button" class="ui-button subtle">Cut out region</button></div>
+        <div id="extract-help" class="extract-help" hidden>Click around a part to draw a polygon, or add coordinate points with the controls below. <div class="vertex-controls"><label>X <input id="vertex-x" type="number" min="0" max="2048" step="1" value="200"></label><label>Y <input id="vertex-y" type="number" min="0" max="2048" step="1" value="200"></label><button id="add-vertex" type="button" class="text-button">+ Point</button></div><button id="finish-extract" type="button" class="text-button">Extract region</button> <button id="cancel-extract" type="button" class="text-button">Cancel</button></div>
+        <div class="layer-list-label"><span>STACK / FRONT TO BACK</span><span>VIS · LOCK</span></div><div id="layer-list" class="layer-list" aria-label="Layers"></div>
+        <div class="layer-footer"><button id="move-layer-up" class="ui-button mini" type="button">↑ Front</button><button id="move-layer-down" class="ui-button mini" type="button">↓ Back</button><button id="delete-layer" class="ui-button mini danger" type="button">Remove</button></div>
+        <div class="source-note"><span class="source-line"></span><div class="section-eyebrow">SOURCE PRINCIPLE</div><p>The image is the artwork. The rig is motion data. You can replace the former without throwing away the latter.</p></div>
+      </aside>
+      <main class="stage-column">
+        <div class="stage-toolbar"><div><span class="section-eyebrow">02 / LIVE STAGE</span><div class="stage-title"><h2>Animation preview</h2><span class="canvas-measure" id="scene-dimensions">640 × 640 PX</span></div></div><div class="stage-tools"><button class="tool-chip active" id="tool-move" aria-pressed="true" type="button"><span aria-hidden="true">✥</span> Move</button><button class="tool-chip" id="tool-extract" aria-pressed="false" type="button"><span aria-hidden="true">◇</span> Extract</button></div></div>
+        <div class="canvas-frame"><div class="stage-rule" aria-hidden="true"><span>STAGE / 01</span><span>TRANSPARENT</span></div><div class="stage-padding"><div class="canvas-wrap" id="canvas-wrap"><canvas id="stage" width="640" height="640" aria-label="Character animation stage"></canvas><canvas id="overlay" width="640" height="640" aria-label="Drag layers to move or click to mark extraction polygon" tabindex="0"></canvas></div></div><div class="stage-bottom"><span><span class="legend-square"></span> Alpha checkerboard</span><span id="stage-status">Click a layer to adjust it</span></div></div>
+        <section class="timeline-panel" aria-label="Animation timeline"><div class="timeline-top"><div><div class="section-eyebrow">03 / MOTION</div><h2>Timeline</h2></div><div class="transport"><button id="play-toggle" class="play-control" type="button" aria-label="Play animation">▶</button><button id="start-over" class="transport-button" type="button" title="Back to first frame" aria-label="Back to first frame">↺</button><output id="time-display">00:00 / 02:00</output></div></div><div class="timeline-ruler"><span>00</span><input id="time-slider" type="range" min="0" max="2000" value="0" step="10" aria-label="Timeline playhead"><span id="duration-end">2.0s</span></div><div class="track-header"><span id="track-name">SELECT A LAYER TO SEE KEYFRAMES</span><button id="keyframe-add" type="button" class="text-button">+ Key current pose</button></div><div class="keyframe-track" id="keyframe-track" aria-label="Keyframes of selected layer"></div><div class="timeline-foot"><label>Duration <input id="duration-input" type="number" min="0.5" max="30" step="0.5" value="2" aria-label="Animation duration in seconds"> sec</label><label>FPS <select id="fps-input" aria-label="Frames per second"><option>8</option><option>12</option><option selected>24</option><option>30</option><option>60</option></select></label><span>Deterministic motion, single playback clock</span></div></section>
+      </main>
+      <aside class="panel inspector-panel" aria-label="Animation inspector"><div class="panel-heading"><div><div class="section-eyebrow">04 / CONTROLS</div><h2>Inspector</h2></div><span class="inspector-index">D/R</span></div><div class="inspector-tabs" role="tablist" aria-label="Inspector panels"><button type="button" role="tab" data-tab="pose" aria-selected="true">Pose</button><button type="button" role="tab" data-tab="motion" aria-selected="false">Motion</button><button type="button" role="tab" data-tab="export" aria-selected="false">Export</button></div><div class="inspector-content" id="inspector-content" role="tabpanel"></div><div class="inspector-end"><div class="tiny-label">MOTION READOUT</div><div id="loop-readout" class="loop-readout">Loop check unavailable</div></div></aside>
+    </div>
+    <footer class="status-bar"><div class="status-left"><span class="status-pulse"></span><span id="notice" role="status" aria-live="polite">Loading studio…</span></div><span>DEX RIG • OFFLINE CHARACTER SYSTEM</span><span id="autosave-label">LOCAL SAVE</span></footer>
+  </div>
+</body>
+</html>
